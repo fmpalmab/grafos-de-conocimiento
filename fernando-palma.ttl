@@ -1,0 +1,49 @@
+# Laboratorio 1 - Grafos
+# Fernando Palma
+
+# declaracion de prefijos
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ex:   <https://ug.uchile.cl/> . 
+
+# P1 IRI de mi mismo
+#ex:fernando-palma a foaf:Person ;
+#    foaf:name           "Fernando Palma Balbín" ;
+#    foaf:givenName      "Fernando" ;
+#    foaf:familyName     "Palma Balbín" ;
+#    foaf:mbox           <mailto:fernando.palma.b@ug.uchile.cl> ;
+#    foaf:img            <https://images.wikidexcdn.net/mwuploads/wikidex/thumb/b/bb/latest/20211210200407/Growlithe.png/200px-Growlithe.png> ;
+#    foaf:account        <https://github.com/fmpalmab> ;
+#    foaf:knows          ex:matias-carvajal ;
+#    foaf:knows          ex:naomi-cautivo .
+
+# P2 (agregar cosas y hacer iri denuevo)
+
+# declaracion de prefijos rdfs
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Definir la clase Estudiante como subclase de Persona
+ex:Estudiante a rdfs:Class ;
+    rdfs:subClassOf foaf:Person ;
+    rdfs:label "Estudiante" ;
+    rdfs:comment "Una persona que cursa estudios en una universidad." .
+
+ex:estudiaEn a rdf:Property ;
+    rdfs:domain ex:Estudiante ; #deben ser estudiantes los que estudian lol
+    rdfs:range rdfs:Resource ;
+    rdfs:label "estudia en" ;
+    rdfs:comment "Relaciona a un estudiante con la universidad donde estudia." .
+
+# IRI de mi mismo usando la nueva clase 'Estudiante'
+ex:fernando-palma a ex:Estudiante ;
+    foaf:name           "Fernando Palma Balbín" ;
+    foaf:givenName      "Fernando" ;
+    foaf:familyName     "Palma Balbín" ;
+    foaf:mbox           <mailto:fernando.palma.b@ug.uchile.cl> ;
+    foaf:img            <https://images.wikidexcdn.net/mwuploads/wikidex/thumb/b/bb/latest/20211210200407/Growlithe.png/200px-Growlithe.png> ;
+    foaf:account        <https://github.com/fmpalmab> ;
+    foaf:knows          ex:matias-carvajal ;
+    foaf:knows          ex:naomi-cautivo ;
+    ex:estudiaEn        <http://www.wikidata.org/entity/Q182872> ;
+    rdfs:label          "Fernando Palma" ;
+    rdfs:comment        "Estudiante del curso MDS7203 Grafos de Conocimiento." .
