@@ -3,7 +3,7 @@
 
 # declaracion de prefijos
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix ex:   <https://ug.uchile.cl/> . 
+@prefix ex:   <https://ingenieria.uchile.cl/> . 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
@@ -44,6 +44,6 @@ ex:fernando-palma a ex:Estudiante ;
     foaf:account        <https://github.com/fmpalmab> ;
     foaf:knows          ex:matias-carvajal ;
     foaf:knows          ex:naomi-cautivo ;
-    ex:estudiaEn        <http://www.wikidata.org/entity/Q182872> ;
+    ex:estudiaEn        <http://www.wikidata.org/entity/Q5854679> ;
     rdfs:label          "Fernando Palma" ;
     rdfs:comment        "Estudiante del curso MDS7203 Grafos de Conocimiento." .
