@@ -1,0 +1,145 @@
+@prefix : <http://example.org/hotd/>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# P1
+:hasSpouse a owl:SymmetricProperty.
+:engagedTo a owl:SymmetricProperty.
+
+# P2
+:hasParent owl:inverseOf :hasChild.
+
+# P3
+:hasChild rdfs:subPropertyOf :ancestorOf.
+:ancestorOf a owl:TransitiveProperty.
+
+# P4
+:hasSibling owl:propertyChainAxiom (:hasParent :hasChild).
+:hasCousin owl:propertyChainAxiom (:hasParent :hasSibling :hasChild).
+# P5
+:Targaryen owl:equivalentClass [
+    a owl:Restriction ;
+    owl:onProperty :memberOf ;
+    owl:hasValue :HouseTargaryen
+] .
+
+# P6
+:Velaryon owl:equivalentClass [
+    a owl:Restriction ;
+    owl:onProperty :memberOf ;
+    owl:hasValue :HouseVelaryon
+] .
+
+# para completar las otras casas que son valyrian
+:Celtigar owl:equivalentClass [
+    a owl:Restriction ;
+    owl:onProperty :memberOf ;
+    owl:hasValue :HouseCeltigar
+] .
+
+:HouseCeltigar a :House ;
+    foaf:name "House Celtigar" .
+
+:Valyrian owl:equivalentClass [
+    owl:unionOf ( :Targaryen :Velaryon :Celtigar )
+] .
+
+# P7
+:memberOf a owl:FunctionalProperty .
+:Andal owl:equivalentClass [
+    owl:intersectionOf (
+        :Person 
+        [ a owl:Class ; owl:complementOf :Valyrian ]
+    )
+] .
+# al poner que solo fuera el complemento de Valyrian no funcionaba
+# P8
+:OnlyMarriesValyrians owl:equivalentClass [
+    a owl:Restriction ;
+    owl:onProperty :hasSpouse ;
+    owl:allValuesFrom :Valyrian
+] .
+# siguen sin funcionar
+# Houses
+:HouseTargaryen a :House ;
+    foaf:name "House Targaryen" .
+
+:HouseVelaryon a :House ;
+    foaf:name "House Velaryon" .
+
+:HouseHightower a :House ;
+    foaf:name "House Hightower" .
+
+# Characters
+:RhaenyraTargaryen a :Person ;
+    foaf:name "Rhaenyra Targaryen" ;
+    :memberOf :HouseTargaryen .
+
+:DaemonTargaryen a :Person ;
+    foaf:name "Daemon Targaryen" ;
+    :memberOf :HouseTargaryen .
+
+:LaenorVelaryon a :Person ;
+    foaf:name "Laenor Velaryon" ;
+    :memberOf :HouseVelaryon .
+
+:AlicentHightower a :Person ;
+    foaf:name "Alicent Hightower" ;
+    :memberOf :HouseHightower .
+
+:ViserysTargaryen a :Person ;
+    foaf:name "Viserys I Targaryen" ;
+    :memberOf :HouseTargaryen .
+
+:AegonTargaryen a :Person ;
+    foaf:name "Aegon II Targaryen" ;
+    :memberOf :HouseTargaryen .
+
+:AemondTargaryen a :Person ;
+    foaf:name "Aemond Targaryen" ;
+    :memberOf :HouseTargaryen .
+
+:JacaerysVelaryon a :Person ;
+    foaf:name "Jacaerys Velaryon" ;
+    :memberOf :HouseTargaryen .
+
+:LucerysVelaryon a :Person ;
+    foaf:name "Lucerys Velaryon" ;
+    :memberOf :HouseTargaryen .
+
+:BaelaTargaryen a :Person ;
+    foaf:name "Baela Targaryen" ;
+    :memberOf :HouseTargaryen .
+
+:RhaenaTargaryen a :Person ;
+    foaf:name "Rhaena Targaryen" ;
+    :memberOf :HouseTargaryen .
+
+# Marriages
+:RhaenyraTargaryen :hasSpouse :LaenorVelaryon .
+:RhaenyraTargaryen :hasSpouse :DaemonTargaryen .
+:DaemonTargaryen :hasSpouse :LaenaVelaryon .
+:DaemonTargaryen :hasSpouse :RheaRoyce .
+:ViserysTargaryen :hasSpouse :AemmaArryn .
+:ViserysTargaryen :hasSpouse :AlicentHightower .
+
+# Engagements
+:JacaerysVelaryon :engagedTo :BaelaTargaryen .
+:LucerysVelaryon :engagedTo :RhaenaTargaryen .
+
+# Parent-Child
+:BaelorTargaryen :hasChild :ViserysTargaryen .
+:BaelorTargaryen :hasChild :DaemonTargaryen .
+
+:ViserysTargaryen :hasChild :RhaenyraTargaryen .
+:ViserysTargaryen :hasChild :AegonTargaryen .
+:ViserysTargaryen :hasChild :AemondTargaryen .
+:AlicentHightower :hasChild :AegonTargaryen .
+:AlicentHightower :hasChild :AemondTargaryen .
+
+:RhaenyraTargaryen :hasChild :JacaerysVelaryon .
+:RhaenyraTargaryen :hasChild :LucerysVelaryon .
+:DaemonTargaryen :hasChild :BaelaTargaryen .
+:DaemonTargaryen :hasChild :RhaenaTargaryen .
