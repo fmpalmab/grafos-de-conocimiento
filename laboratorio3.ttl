@@ -1,0 +1,352 @@
+
+# Laboratorio 3 - Fernando Palma
+
+# P1
+
+
+# Error original: el shape esperaba xsd:string pero el dato usa xsd:date.
+# Se arregla cambiando el datatype en el shape a xsd:date
+# (también funciona al revés: dejar los dos como xsd:string).
+
+# --- Error ---
+
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix l: <http://data.nobelprize.org/resource/laureate/>.
+@prefix n0: <http://xmlns.com/foaf/0.1/>.
+@prefix XML: <http://www.w3.org/2001/XMLSchema#>.
+
+[
+    a sh:ValidationResult;
+    sh:focusNode l:935;
+    sh:resultMessage
+        "Value does not have datatype <http://www.w3.org/2001/XMLSchema#string>";
+    sh:resultPath n0:birthday;
+    sh:resultSeverity sh:Violation;
+    sh:sourceConstraintComponent sh:DatatypeConstraintComponent;
+    sh:sourceShape [];
+    sh:value "1948-10-09"^^XML:date
+].
+
+# --- Data 1 (sin modificar) ---
+
+@prefix laureate: <http://data.nobelprize.org/resource/laureate/> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+
+laureate:935
+    a                foaf:Person ;
+    foaf:birthday    "1948-10-09"^^xsd:date ;
+    foaf:familyName  "Hart" ;
+    foaf:givenName   "Oliver" ;
+    foaf:name        "Oliver Hart" ;
+    foaf:gender      "male" .
+
+# --- Shape 1 (modificado) ---
+
+@prefix ex:   <http://example.org#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ex:PersonShape a sh:NodeShape ;
+    sh:targetClass foaf:Person ;
+    sh:property [
+        sh:path     foaf:birthday ;
+        sh:datatype xsd:date ;
+    ] .
+
+
+
+# P2 --------------------------
+
+
+# Se agrega una sh:property con sh:alternativePath para cubrir
+# foaf:givenName, foaf:name y foaf:familyName en una sola restricción.
+
+# --- Shape 1 (modificado con validación de nombres) ---
+
+@prefix ex:   <http://example.org#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ex:PersonShape a sh:NodeShape ;
+    sh:targetClass foaf:Person ;
+    sh:property [
+        sh:path     foaf:birthday ;
+        sh:datatype xsd:date ;
+    ] ;
+    sh:property [
+        sh:path [
+            sh:alternativePath ( foaf:givenName foaf:name foaf:familyName )
+        ] ;
+        sh:datatype xsd:string ;
+    ] .
+
+# --- Error al cambiar un nombre a número ---
+
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix l:  <http://data.nobelprize.org/resource/laureate/>.
+
+[
+    a sh:ValidationResult;
+    sh:focusNode l:935;
+    sh:resultMessage
+        "Value does not have datatype <http://www.w3.org/2001/XMLSchema#string>";
+    sh:resultPath [];
+    sh:resultSeverity sh:Violation;
+    sh:sourceConstraintComponent sh:DatatypeConstraintComponent;
+    sh:sourceShape [];
+    sh:value 12
+].
+
+
+
+# P3 ----------------------
+
+
+# --- Data 2 (sin modificar) ---
+
+@prefix country:    <http://data.nobelprize.org/resource/country/> .
+@prefix city:       <http://data.nobelprize.org/resource/city/> .
+@prefix university: <http://data.nobelprize.org/resource/university/> .
+@prefix laureate:   <http://data.nobelprize.org/resource/laureate/> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix nobel:      <http://data.nobelprize.org/terms/> .
+@prefix dbo:        <http://dbpedia.org/ontology/> .
+@prefix dbp:        <http://dbpedia.org/property/> .
+@prefix foaf:       <http://xmlns.com/foaf/0.1/> .
+
+laureate:935
+    a                    foaf:Person , nobel:Laureate ;
+    rdfs:label           "Oliver Hart" ;
+    dbo:affiliation      university:Harvard_University ;
+    dbo:birthPlace       city:London , country:United_Kingdom ;
+    dbp:dateOfBirth      "1948-10-09"^^xsd:date ;
+    foaf:birthday        "1948-10-09"^^xsd:date ;
+    foaf:familyName      "Hart" ;
+    foaf:givenName       "Oliver" ;
+    foaf:name            "Oliver Hart" ;
+    foaf:gender          "male" .
+
+university:Harvard_University
+    a          dbo:University ;
+    rdfs:label "Harvard University" .
+
+country:United_Kingdom
+    a          dbo:Country ;
+    rdfs:label "United Kingdom" .
+
+city:London
+    a          dbo:City ;
+    rdfs:label "London" .
+
+# --- Shape 2 (sin modificar) ---
+
+@prefix ex:    <http://example.org#> .
+@prefix dash:  <http://datashapes.org/dash#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix nobel: <http://data.nobelprize.org/terms/> .
+@prefix dbo:   <http://dbpedia.org/ontology/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+ex:LaureateShape a sh:NodeShape ;
+    sh:targetClass nobel:Laureate .
+
+# --- Shape 2 (modificado: al menos una afiliación con dbo:University) ---
+
+@prefix ex:    <http://example.org#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix nobel: <http://data.nobelprize.org/terms/> .
+@prefix dbo:   <http://dbpedia.org/ontology/> .
+
+ex:LaureateShape a sh:NodeShape ;
+    sh:targetClass nobel:Laureate ;
+    sh:property [
+        sh:path     dbo:affiliation ;
+        sh:class    dbo:University ;
+        sh:minCount 1 ;
+    ] .
+
+
+
+# P4 ------------
+
+# Se reemplaza sh:class + sh:minCount por sh:qualifiedValueShape
+# para permitir otras afiliaciones pero exigir exactamente una universidad.
+
+@prefix ex:    <http://example.org#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix nobel: <http://data.nobelprize.org/terms/> .
+@prefix dbo:   <http://dbpedia.org/ontology/> .
+
+ex:LaureateShape a sh:NodeShape ;
+    sh:targetClass nobel:Laureate ;
+    sh:property [
+        sh:path dbo:affiliation ;
+        sh:qualifiedValueShape [
+            sh:class dbo:University ;
+        ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedMaxCount 1 ;
+    ] .
+
+
+
+# P5 -------------------
+
+# sh:equals falla si alguna de las dos propiedades no está definida,
+# porque un conjunto vacío no es igual a un conjunto no vacío.
+# Solo valida correctamente si ambas propiedades están presentes.
+# Además, dbp debe estar prefijado en el shape, no solo en el data.
+
+@prefix ex:    <http://example.org#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix nobel: <http://data.nobelprize.org/terms/> .
+@prefix dbo:   <http://dbpedia.org/ontology/> .
+@prefix dbp:   <http://dbpedia.org/property/> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+ex:LaureateShape a sh:NodeShape ;
+    sh:targetClass nobel:Laureate ;
+    sh:property [
+        sh:path dbo:affiliation ;
+        sh:qualifiedValueShape [
+            sh:class dbo:University ;
+        ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedMaxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path   dbp:dateOfBirth ;
+        sh:equals foaf:birthday ;
+    ] .
+
+
+
+# P6 -------------------------------
+
+
+# Se usa sh:or para cubrir tres casos:
+#   (a) dbp:dateOfBirth no está definida (maxCount 0)
+#   (b) foaf:birthday no está definida (maxCount 0)
+#   (c) ambas están definidas e iguales (sh:equals)
+
+@prefix ex:    <http://example.org#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix nobel: <http://data.nobelprize.org/terms/> .
+@prefix dbo:   <http://dbpedia.org/ontology/> .
+@prefix dbp:   <http://dbpedia.org/property/> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+ex:LaureateShape a sh:NodeShape ;
+    sh:targetClass nobel:Laureate ;
+    sh:property [
+        sh:path dbo:affiliation ;
+        sh:qualifiedValueShape [
+            sh:class dbo:University ;
+        ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedMaxCount 1 ;
+    ] ;
+    sh:or (
+        [
+            sh:property [
+                sh:path     dbp:dateOfBirth ;
+                sh:maxCount 0 ;
+            ]
+        ]
+        [
+            sh:property [
+                sh:path     foaf:birthday ;
+                sh:maxCount 0 ;
+            ]
+        ]
+        [
+            sh:property [
+                sh:path   dbp:dateOfBirth ;
+                sh:equals foaf:birthday ;
+            ]
+        ]
+    ) .
+
+# P7 ------------------------------------------------
+
+# Los datos se validan correctamente con las shapes originales sin modificar nada.
+# Se agrega sh:pattern con la expresión "^[^_0-9]{2,}$":
+# Usando sh:alternativePath para cubrir foaf:name, foaf:givenName y foaf:familyName.
+
+@prefix ex:    <http://example.org#> .
+@prefix dash:  <http://datashapes.org/dash#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix nobel: <http://data.nobelprize.org/terms/> .
+@prefix dbo:   <http://dbpedia.org/ontology/> .
+@prefix dbp:   <http://dbpedia.org/property/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+nobel:Laureate a sh:NodeShape ;
+    sh:property [
+        sh:path [
+            sh:alternativePath ( foaf:birthday dbp:dateOfBirth )
+        ] ;
+        sh:datatype xsd:date ;
+    ] ;
+    sh:property [
+        sh:path [
+            sh:alternativePath ( foaf:name foaf:givenName foaf:familyName )
+        ] ;
+        sh:pattern "^[^_0-9]{2,}$" ;
+    ] .
+
+# P8
+
+# nobel:share es string, así que se usa sh:in con los valores como strings.
+
+@prefix ex:    <http://example.org#> .
+@prefix dash:  <http://datashapes.org/dash#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix nobel: <http://data.nobelprize.org/terms/> .
+@prefix dbo:   <http://dbpedia.org/ontology/> .
+@prefix dbp:   <http://dbpedia.org/property/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+ex:LaureateAwardShape a sh:NodeShape ;
+    sh:targetClass nobel:LaureateAward ;
+    sh:property [
+        sh:path nobel:share ;
+        sh:in   ( "1" "2" "3" "4" ) ;
+    ] .
+
+# P9
+
+# El target cambia a nobel:NobelPrize según el enunciado.
+# sh:minLength 10 asegura strings de al menos 10 caracteres.
+# sh:maxCount 1 permite a lo más una motivación (por idioma, via language tag).
+
+@prefix ex:    <http://example.org#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix nobel: <http://data.nobelprize.org/terms/> .
+
+ex:LaureateAwardShape a sh:NodeShape ;
+    sh:targetClass nobel:NobelPrize ;
+    sh:property [
+        sh:path     nobel:share ;
+        sh:in       ( "1" "2" "3" "4" ) ;
+    ] ;
+    sh:property [
+        sh:path      nobel:motivation ;
+        sh:minLength 10 ;
+        sh:maxCount  1 ;
+    ] .
