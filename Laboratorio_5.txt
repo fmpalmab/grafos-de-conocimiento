@@ -1,0 +1,54 @@
+// Laboratorio 5 Grafos de Conocimiento MDS7205-1 2026-1
+// Estudiante: Fernando Palma
+
+// P1. Obtenga una lista de todas las películas: retorne solo título y género. 
+MATCH (m:Movie)
+RETURN m.title AS Titulo, m.genre AS Genero;
+
+// P2. Obtenga la lista de todos los actores que aparecen en Inception y el personaje que interpretaron. 
+MATCH (a:Person)-[r:ACTED_IN]->(m:Movie {title: 'Inception'})
+RETURN a.name AS Actor, r.roles AS Personaje;
+
+// P3. Entregue los títulos de las películas que tienen más de dos actores. 
+MATCH (a:Person)-[:ACTED_IN]->(m:Movie)
+WITH m, count(a) AS num_actores
+WHERE num_actores > 2
+RETURN m.title AS Titulo;
+
+// P4. Obtenga las películas en las que el director también actúa. Retorne el título de la película, el nombre del director y el personaje que interpreta. 
+MATCH (p:Person)-[:DIRECTED]->(m:Movie)
+MATCH (p)-[r:ACTED_IN]->(m)
+RETURN m.title AS Titulo, p.name AS Director_Actor, r.role AS Personaje;
+
+// P5. Obtenga a las personas que han actuado en alguna película de Christopher Nolan, pero no en ninguna de Quentin Tarantino. 
+MATCH (a:Person)-[:ACTED_IN]->(m1:Movie)<-[:DIRECTED]-(d1:Person {name: 'Christopher Nolan'})
+WHERE NOT EXISTS {
+    MATCH (a)-[:ACTED_IN]->(m2:Movie)<-[:DIRECTED]-(d2:Person {name: 'Quentin Tarantino'})
+}
+RETURN DISTINCT a.name AS Persona;
+
+// P6. Para cada persona del grafo, cuente cuántos de sus amigos han actuado o dirigido una película. 
+MATCH (p:Person)
+OPTIONAL MATCH (p)-[:FRIEND_OF]-(amigo:Person)
+WHERE EXISTS { MATCH (amigo)-[:ACTED_IN]->(:Movie) } OR EXISTS { MATCH (amigo)-[:DIRECTED]->(:Movie) }
+RETURN p.name AS Persona, count(DISTINCT amigo) AS Amigos_Cineastas;
+
+// P7. Entrege la lista transitiva de amistades de Margot Robbie, sin incluirla a ella. Procure no entregar nombres repetidos (use UNWIND y DISTINCT). 
+MATCH (:Person {name: 'Margot Robbie'})-[:FRIEND_OF*1..]-(amigo:Person)
+WHERE amigo.name <> 'Margot Robbie'
+WITH collect(amigo.name) AS lista_amigos
+UNWIND lista_amigos AS amigo_unwind
+RETURN DISTINCT amigo_unwind AS Amistad_Transitiva;
+
+// P8. Encuentre las 3 personas con el mayor número de amigos. 
+MATCH (p:Person)-[:FRIEND_OF]-(amigo:Person)
+RETURN p.name AS Persona, count(DISTINCT amigo) AS Numero_Amigos
+ORDER BY Numero_Amigos DESC
+LIMIT 3;
+
+// P9. Encuentre los pares de actores que han trabajado en más de una película juntos. 
+MATCH (a1:Person)-[:ACTED_IN]->(m:Movie)<-[:ACTED_IN]-(a2:Person)
+WHERE id(a1) < id(a2)
+WITH a1, a2, count(m) AS peliculas_juntos
+WHERE peliculas_juntos > 1
+RETURN a1.name AS Actor_1, a2.name AS Actor_2, peliculas_juntos AS Peliculas_Compartidas;
