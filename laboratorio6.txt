@@ -1,0 +1,919 @@
+Laboratorio 6 MDS7205 Fernando Palma
+
+- P1 -
+
+Consulta IRIS:
+PREFIX v: <http://example.org/vocab#>
+SELECT ?castle WHERE {
+  ?castle a v:Castle .
+}
+
+Resultados IRIS:
+
+{
+  "head": {
+    "vars": [
+      "castle"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/got#Dragonstone"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/got#Winterfell"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/got#Pyke"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/got#Sunspear"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/got#CasterlyRock"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/got#Highgarden"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/got#StormsEnd"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/hotd#Dragonstone"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/hotd#Oldtown"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/hotd#HighTide"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/kot7k#Blackmont"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/kot7k#Starpike"
+        }
+      },
+      {
+        "castle": {
+          "type": "uri",
+          "value": "http://example.org/kot7k#Dragonstone"
+        }
+      }
+    ]
+  }
+}
+
+Consulta Nombres:
+
+SELECT DISTINCT ?name WHERE {
+  ?castle a v:Castle ;
+          foaf:name ?name .
+}
+
+Resultados Nombres:
+
+{
+  "head": {
+    "vars": [
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": {
+          "type": "literal",
+          "value": "Winterfell"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Pyke"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Dragonstone"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "CasterlyRock"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Highgarden"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Dragonstone"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Blackmont"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Oldtown"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Sunspear"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "HighTide"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "StormsEnd"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Starpike"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Dragonstone"
+        }
+      }
+    ]
+  }
+}
+
+Respuesta pregunta: Dan el mismo número de resultados, lo cual no debería pasar ya que hay 2 Dragonstone en los resultados, pero no se porque el DISTINCT no funciono.
+
+- FIN P1 -
+
+- P2 -
+
+Consulta:
+
+SELECT ?name WHERE {
+  ?dragon a v:Dragon ;
+          foaf:name ?name .
+  FILTER NOT EXISTS { ?character v:rides ?dragon }
+}
+
+Resultados:
+
+{
+  "head": {
+    "vars": [
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": {
+          "type": "literal",
+          "value": "Grey Ghost"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "The Cannibal"
+        }
+      }
+    ]
+  }
+}
+
+- FIN P2 -
+
+- P3 -
+
+Consulta:
+
+PREFIX v: <http://example.org/vocab#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?name WHERE {
+  ?knight a v:Knight ;
+          foaf:name ?name ;
+          v:rides ?dragon .
+}
+
+Resultados:
+
+{
+  "head": {
+    "vars": [
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": {
+          "type": "literal",
+          "value": "Jon Snow"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Laenor Velaryon"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Daemon Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Aemond Targaryen"
+        }
+      }
+    ]
+  }
+}
+
+- FIN P3 -
+
+- P4 -
+
+Consulta:
+
+SELECT DISTINCT ?name WHERE {
+  ?monarch a ?role ;
+           foaf:name ?name .
+  FILTER (?role IN (v:King, v:Queen))
+  FILTER NOT EXISTS { ?monarch v:rides ?dragon }
+}
+
+Resultados:
+
+{
+  "head": {
+    "vars": [
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": {
+          "type": "literal",
+          "value": "Aerys II Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Aerys Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Robert Baratheon"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Cersei Lannister"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Aegon V Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Jaehaerys II Targaryen"
+        }
+      }
+    ]
+  }
+}
+
+- FIN P4 -
+
+- P5 -
+
+Consulta sin la relación:
+
+SELECT DISTINCT ?name WHERE {
+  ?person a v:Character ;
+          foaf:name ?name ;
+          v:spouse ?spouse1, ?spouse2 .
+  FILTER (?spouse1 != ?spouse2)
+}
+
+Resultados sin la relación:
+
+{
+  "head": {
+    "vars": [
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": {
+          "type": "literal",
+          "value": "Rhaenyra Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Daemon Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Viserys I Targaryen"
+        }
+      }
+    ]
+  }
+}
+
+Definir relación:
+
+@prefix v: <http://example.org/vocab#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+v:spouse a owl:SymmetricProperty .
+
+Consulta con la relación: Es la misma
+
+Resultados con la relación:
+
+{
+  "head": {
+    "vars": [
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": {
+          "type": "literal",
+          "value": "Viserys I Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Rhaenyra Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Daemon Targaryen"
+        }
+      }
+    ]
+  }
+}
+
+Respuesta de la pregunta: Los resultados no cambian, esto es debido a que lo que importa al hacer el query es el número de relaciones salientes de spouse, y esas no cambian, ahora solo se generan entrantes.
+
+- FIN P5 -
+
+- P6 -
+
+Consulta:
+
+PREFIX v: <http://example.org/vocab#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+SELECT DISTINCT ?name WHERE {
+  ?king a v:King ;
+        foaf:name ?name ;
+        v:spouse ?spouse .
+  ?spouse v:memberOf ?house .
+  FILTER (?house NOT IN (<http://example.org/got#HouseTargaryen>, 
+                         <http://example.org/kot7k#HouseTargaryen>, 
+                         <http://example.org/hotd#HouseTargaryen>))
+}
+
+Resultados:
+
+{
+  "head": {
+    "vars": [
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": {
+          "type": "literal",
+          "value": "Viserys I Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Robert Baratheon"
+        }
+      }
+    ]
+  }
+}
+
+- FIN P6 -
+
+- P7 -
+
+Consulta:
+
+SELECT DISTINCT ?name WHERE {
+  ?person a v:Character ;
+          foaf:name ?name ;
+          v:memberOf ?house .
+  FILTER (?house IN (<http://example.org/got#HouseTargaryen>, 
+                     <http://example.org/kot7k#HouseTargaryen>, 
+                     <http://example.org/hotd#HouseTargaryen>))
+  FILTER NOT EXISTS { ?person v:rides ?dragon }
+}
+
+Resultados:
+
+{
+  "head": {
+    "vars": [
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": {
+          "type": "literal",
+          "value": "Aerys Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Rhaegar Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Ser Duncan the Tall"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Duncan Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Ser Lyonel Baratheon"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Ser Abelar Hightower"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Rhaegar Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Betha Blackwood"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Helaena Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Rhaena Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Jaehaerys II Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Shaera Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Ser Humfrey Hardyng"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Aerys II Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Ser Addam Velaryon"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Aegon V Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Rhaella Targaryen"
+        }
+      },
+      {
+        "name": {
+          "type": "literal",
+          "value": "Viserys Targaryen"
+        }
+      }
+    ]
+  }
+}
+
+- FIN P7 -
+
+- P8 -
+
+Consulta:
+
+SELECT DISTINCT ?homeName WHERE {
+  { ?monarch a v:King } UNION { ?monarch a v:Queen }
+  ?monarch v:ancestralHome ?home .
+  ?home foaf:name ?homeName .
+}
+
+Resultados:
+
+{
+  "head": {
+    "vars": [
+      "homeName"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "homeName": {
+          "type": "literal",
+          "value": "Dragonstone"
+        }
+      },
+      {
+        "homeName": {
+          "type": "literal",
+          "value": "StormsEnd"
+        }
+      },
+      {
+        "homeName": {
+          "type": "literal",
+          "value": "Dragonstone"
+        }
+      },
+      {
+        "homeName": {
+          "type": "literal",
+          "value": "Dragonstone"
+        }
+      },
+      {
+        "homeName": {
+          "type": "literal",
+          "value": "Winterfell"
+        }
+      },
+      {
+        "homeName": {
+          "type": "literal",
+          "value": "CasterlyRock"
+        }
+      }
+    ]
+  }
+}
+
+- FIN P8 -
+
+- P9 -
+
+Consulta:
+
+SELECT ?dragonName (COUNT(?rider) AS ?riderCount) WHERE {
+  ?dragon a v:Dragon ;
+          foaf:name ?dragonName .
+  OPTIONAL { ?rider v:rides ?dragon }
+} 
+GROUP BY ?dragonName
+ORDER BY DESC(?riderCount)
+
+Resultados:
+
+{
+  "head": {
+    "vars": [
+      "dragonName",
+      "riderCount"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Vhagar"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "3"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Balerion"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "2"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Arrax"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Caraxes"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Drogon"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Meleys"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Meraxes"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Moondancer"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Rhaegal"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Seasmoke"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Sheepstealer"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Sunfyre"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Syrax"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Tessarion"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Vermax"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Viserion"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "1"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "Grey Ghost"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "0"
+        }
+      },
+      {
+        "dragonName": {
+          "type": "literal",
+          "value": "The Cannibal"
+        },
+        "riderCount": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+          "type": "literal",
+          "value": "0"
+        }
+      }
+    ]
+  }
+}
+
+
+
+
