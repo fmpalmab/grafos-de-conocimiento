@@ -1,0 +1,66 @@
+Laboratorio 7
+Fernando Palma
+
+P1
+
+MATCH (a:Airport)-[r:vuelo]-()
+RETURN a.Name AS aeropuerto, a.IATA AS codigo, COUNT(r) AS grado
+ORDER BY grado DESC
+LIMIT 1
+
+P2
+
+CALL gds.graph.project.cypher(
+  'usAirports',
+  'MATCH (n:Airport) WHERE n.Country = "United States" RETURN id(n) AS id',
+  'MATCH (a:Airport)-[:vuelo]->(b:Airport) WHERE a.Country = "United States" AND b.Country = "United States" RETURN id(a) AS source, id(b) AS target'
+)
+
+CALL gds.closeness.stream('usAirports')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).Name AS aeropuerto, gds.util.asNode(nodeId).City AS ciudad, score
+ORDER BY score DESC
+
+CALL gds.pageRank.stream('usAirports')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).Name AS aeropuerto, gds.util.asNode(nodeId).City AS ciudad, score
+ORDER BY score DESC
+
+P3
+
+CALL gds.graph.project(
+  'fullAirports',
+  'Airport',
+  {vuelo: {orientation: 'UNDIRECTED'}}
+)
+
+CALL gds.leiden.stream('fullAirports')
+YIELD nodeId, communityId
+RETURN gds.util.asNode(nodeId).City AS ciudad, gds.util.asNode(nodeId).Country AS pais, communityId AS comunidad
+ORDER BY pais ASC
+
+P4
+
+CALL gds.graph.project('directedAirports', 'Airport', 'vuelo')
+
+MATCH (source:Airport {IATA: 'JFK'})
+CALL gds.bfs.stream('directedAirports', {
+  sourceNode: id(source),
+  maxDepth: 4
+})
+YIELD path
+UNWIND nodes(path) AS nodeId
+WITH gds.util.asNode(nodeId) AS airport
+RETURN DISTINCT airport.Country AS pais
+ORDER BY pais
+
+P5
+
+MATCH (scl:Airport {IATA: 'SCL'})
+CALL gds.nodeSimilarity.filtered.stream('fullAirports', {
+  sourceNodeFilter: id(scl),
+  topK: 10
+})
+YIELD node1, node2, similarity
+RETURN gds.util.asNode(node2).Name AS aeropuerto, gds.util.asNode(node2).IATA AS codigo, similarity
+ORDER BY similarity DESC
